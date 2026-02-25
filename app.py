@@ -25,6 +25,7 @@ TAIWAN_TIMEZONE = timezone(timedelta(hours=8))
 
 # Global data storage
 sctr_data = {"last_updated": None, "stocks": []}
+is_updating = False
 
 def get_google_sheets_client():
     """Initialize Google Sheets client"""
@@ -42,99 +43,76 @@ def get_google_sheets_client():
         return None
 
 def scrape_sctr():
-    """Scrape SCTR rankings from StockCharts using Selenium on Railway"""
+    """Scrape SCTR rankings from StockCharts"""
     stocks = []
     
     try:
-        # Import selenium only when needed (works on Railway with Chrome)
-        from selenium import webdriver
-        from selenium.webdriver.chrome.options import Options
-        from selenium.webdriver.common.by import By
-        
-        # Setup Chrome options for Railway/Linux environment
-        chrome_options = Options()
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--window-size=1920,1080')
-        chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-        chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36')
-        
-        # Create driver
-        driver = webdriver.Chrome(options=chrome_options)
-        
-        # Navigate to page
-        driver.get(SCTR_URL)
-        
-        # Wait for table to load
-        time.sleep(5)
-        
-        # Find table rows
-        rows = driver.find_elements(By.CSS_SELECTOR, 'table tbody tr')
-        
-        for row in rows:
-            cells = row.find_elements(By.CSS_SELECTOR, 'td')
-            if len(cells) >= 6:
-                try:
-                    symbol = cells[1].text.strip()
-                    sctr_text = cells[5].text.strip()
-                    
-                    if symbol and sctr_text:
-                        try:
-                            sctr_value = float(sctr_text)
-                            stocks.append({
-                                'symbol': symbol,
-                                'sctr': sctr_value
-                            })
-                        except ValueError:
-                            continue
-                except Exception:
-                    continue
-        
-        driver.quit()
+        # Try Selenium first (for full JS rendering)
+        try:
+            from selenium import webdriver
+            from selenium.webdriver.chrome.options import Options
+            from selenium.webdriver.common.by import By
+            
+            chrome_options = Options()
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--disable-dev-shm-usage')
+            chrome_options.add_argument('--disable-gpu')
+            chrome_options.add_argument('--window-size=1920,1080')
+            chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+            chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36')
+            
+            driver = webdriver.Chrome(options=chrome_options)
+            driver.get(SCTR_URL)
+            time.sleep(5)
+            
+            rows = driver.find_elements(By.CSS_SELECTOR, 'table tbody tr')
+            
+            for row in rows:
+                cells = row.find_elements(By.CSS_SELECTOR, 'td')
+                if len(cells) >= 6:
+                    try:
+                        symbol = cells[1].text.strip()
+                        sctr_text = cells[5].text.strip()
+                        if symbol and sctr_text:
+                            try:
+                                sctr_value = float(sctr_text)
+                                stocks.append({'symbol': symbol, 'sctr': sctr_value})
+                            except ValueError:
+                                continue
+                    except Exception:
+                        continue
+            
+            driver.quit()
+            logger.info(f"Selenium scraped {len(stocks)} stocks")
+            
+        except Exception as selenium_err:
+            logger.warning(f"Selenium failed: {selenium_err}, trying fallback")
+            # Fallback: simple requests
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+            response = requests.get(SCTR_URL, headers=headers, timeout=30)
+            soup = BeautifulSoup(response.content, 'lxml')
+            
+            rows = soup.select('table tbody tr')
+            for row in rows[:300]:
+                cells = row.find_all('td')
+                if len(cells) >= 6:
+                    symbol = cells[1].get_text(strip=True)
+                    sctr_text = cells[5].get_text(strip=True)
+                    try:
+                        sctr = float(sctr_text)
+                        stocks.append({'symbol': symbol, 'sctr': sctr})
+                    except:
+                        continue
+            
+            logger.info(f"Fallback scraped {len(stocks)} stocks")
         
         # Sort by SCTR rank and take top 300
         stocks.sort(key=lambda x: x['sctr'], reverse=True)
-        stocks = stocks[:300]
-        
-        logger.info(f"Scraped {len(stocks)} stocks from SCTR")
-        return stocks
-        
-    except ImportError:
-        logger.warning("Selenium not available, using requests fallback")
-        return scrape_sctr_fallback()
-    except Exception as e:
-        logger.error(f"Error scraping SCTR with Selenium: {e}")
-        return scrape_sctr_fallback()
-
-def scrape_sctr_fallback():
-    """Fallback: Simple requests without JS rendering"""
-    stocks = []
-    try:
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
-        response = requests.get(SCTR_URL, headers=headers, timeout=30)
-        soup = BeautifulSoup(response.content, 'lxml')
-        
-        # Try to find any table data
-        rows = soup.select('table tbody tr')
-        for row in rows[:300]:
-            cells = row.find_all('td')
-            if len(cells) >= 6:
-                symbol = cells[1].get_text(strip=True)
-                sctr_text = cells[5].get_text(strip=True)
-                try:
-                    sctr = float(sctr_text)
-                    stocks.append({'symbol': symbol, 'sctr': sctr})
-                except:
-                    continue
-        
-        logger.info(f"Fallback scraped {len(stocks)} stocks")
         return stocks[:300]
+        
     except Exception as e:
-        logger.error(f"Fallback also failed: {e}")
+        logger.error(f"Error scraping SCTR: {e}")
         return []
 
 def calculate_yfinance_data(symbol):
@@ -142,7 +120,6 @@ def calculate_yfinance_data(symbol):
     try:
         ticker = yf.Ticker(symbol)
         info = ticker.info
-        
         return {
             'price': info.get('currentPrice') or info.get('regularMarketPrice'),
             'change': info.get('regularMarketChange'),
@@ -156,7 +133,6 @@ def calculate_yfinance_data(symbol):
             'fifty_two_week_low': info.get('fiftyTwoWeekLow')
         }
     except Exception as e:
-        logger.warning(f"Error fetching YFinance data for {symbol}: {e}")
         return {}
 
 def enrich_data_with_yfinance(stocks):
@@ -164,11 +140,7 @@ def enrich_data_with_yfinance(stocks):
     enriched = []
     for stock in stocks[:50]:
         yf_data = calculate_yfinance_data(stock['symbol'])
-        enriched.append({
-            'symbol': stock['symbol'],
-            'sctr': stock['sctr'],
-            **yf_data
-        })
+        enriched.append({'symbol': stock['symbol'], 'sctr': stock['sctr'], **yf_data})
     return enriched
 
 def save_data():
@@ -208,22 +180,14 @@ def export_to_google_sheets(stocks_data):
             worksheet = spreadsheet.add_worksheet("SCTR Rankings", rows=1000, cols=10)
         
         headers = ['Symbol', 'SCTR', 'Price', 'Change', 'Change %', 'Volume', 'Market Cap', 'PE Ratio', 'Day High', 'Day Low']
-        
         worksheet.clear()
         worksheet.append_row(headers)
         
         for stock in stocks_data:
             row = [
-stock.get('symbol', ''),
-                stock.get('sctr', ''),
-                stock.get('price', ''),
-                stock.get('change', ''),
-                stock.get('change_percent', ''),
-                stock.get('volume', ''),
-                stock.get('market_cap', ''),
-                stock.get('pe_ratio', ''),
-                stock.get('day_high', ''),
-                stock.get('day_low', '')
+                stock.get('symbol', ''), stock.get('sctr', ''), stock.get('price', ''),
+                stock.get('change', ''), stock.get('change_percent', ''), stock.get('volume', ''),
+                stock.get('market_cap', ''), stock.get('pe_ratio', ''), stock.get('day_high', ''), stock.get('day_low', '')
             ]
             worksheet.append_row(row)
         
@@ -232,40 +196,27 @@ stock.get('symbol', ''),
         logger.error(f"Error exporting to Google Sheets: {e}")
         return False, str(e)
 
-def update_sctr_data():
-    """Update SCTR data - main function"""
-    global sctr_data
-    logger.info("Starting SCTR data update...")
+def update_sctr_data_background():
+    """Update SCTR data in background"""
+    global sctr_data, is_updating
+    is_updating = True
     
-    stocks = scrape_sctr()
-    
-    if stocks:
-        enriched_stocks = enrich_data_with_yfinance(stocks)
+    try:
+        logger.info("Starting SCTR data update...")
+        stocks = scrape_sctr()
         
-        sctr_data = {
-            'last_updated': datetime.now(TAIWAN_TIMEZONE).isoformat(),
-            'stocks': enriched_stocks
-        }
-        
-        save_data()
-        
-        logger.info(f"SCTR data updated: {len(enriched_stocks)} stocks")
-        return True
-    else:
-        logger.error("Failed to scrape SCTR data")
-        return False
-
-def run_scheduler():
-    """Run scheduled tasks"""
-    def job():
-        update_sctr_data()
-    
-    # Schedule at 06:00 Taiwan time daily
-    schedule.every().day.at("22:00").do(job)
-    
-    while True:
-        schedule.run_pending()
-        time.sleep(60)
+        if stocks:
+            enriched_stocks = enrich_data_with_yfinance(stocks)
+            sctr_data = {
+                'last_updated': datetime.now(TAIWAN_TIMEZONE).isoformat(),
+                'stocks': enriched_stocks
+            }
+            save_data()
+            logger.info(f"SCTR data updated: {len(enriched_stocks)} stocks")
+        else:
+            logger.error("Failed to scrape SCTR data")
+    finally:
+        is_updating = False
 
 # Routes
 @app.route('/')
@@ -284,12 +235,18 @@ def api_data():
 
 @app.route('/api/update', methods=['POST'])
 def api_update():
-    """Manual update endpoint"""
-    success = update_sctr_data()
-    if success:
-        return jsonify({'status': 'success', 'message': 'Data updated successfully'})
-    else:
-        return jsonify({'status': 'error', 'message': 'Failed to update data'}), 500
+    """Manual update endpoint - starts background job"""
+    global is_updating
+    
+    if is_updating:
+        return jsonify({'status': 'processing', 'message': 'Update already in progress'}), 202
+    
+    # Start background update
+    thread = threading.Thread(target=update_sctr_data_background)
+    thread.daemon = True
+    thread.start()
+    
+    return jsonify({'status': 'success', 'message': 'Update started in background'})
 
 @app.route('/api/export', methods=['POST'])
 def api_export():
@@ -306,6 +263,22 @@ def api_stock_detail(symbol):
     """Get detailed info for a single stock"""
     yf_data = calculate_yfinance_data(symbol)
     return jsonify({'symbol': symbol, **yf_data})
+
+@app.route('/api/status')
+def api_status():
+    """Check if update is in progress"""
+    return jsonify({'is_updating': is_updating})
+
+def run_scheduler():
+    """Run scheduled tasks"""
+    def job():
+        update_sctr_data_background()
+    
+    schedule.every().day.at("22:00").do(job)
+    
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
 
 if __name__ == '__main__':
     load_data()
