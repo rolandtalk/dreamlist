@@ -2,9 +2,9 @@
   "$schema": "https://railway.app/schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "pip install -r requirements.txt && apt-get update && apt-get install -y chromium-browser chromium-chromedriver",
     "nixpacksConfig": {
-      "apt": ["chromium-browser", "chromium-chromedriver"]
+      "python": "3.11",
+      "apt": ["chromium", "chromedriver", "libglib2.0-0", "libnss3", "libgbm1"]
     }
   },
   "deploy": {
