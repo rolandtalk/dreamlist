@@ -43,72 +43,43 @@ def get_google_sheets_client():
         return None
 
 def scrape_sctr():
-    """Scrape SCTR rankings from StockCharts"""
+    """Scrape SCTR rankings from StockCharts using requests"""
     stocks = []
     
     try:
-        # Try Selenium first (for full JS rendering)
-        try:
-            from selenium import webdriver
-            from selenium.webdriver.chrome.options import Options
-            from selenium.webdriver.common.by import By
-            
-            chrome_options = Options()
-            chrome_options.add_argument('--headless')
-            chrome_options.add_argument('--no-sandbox')
-            chrome_options.add_argument('--disable-dev-shm-usage')
-            chrome_options.add_argument('--disable-gpu')
-            chrome_options.add_argument('--window-size=1920,1080')
-            chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-            chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36')
-            
-            driver = webdriver.Chrome(options=chrome_options)
-            driver.get(SCTR_URL)
-            time.sleep(5)
-            
-            rows = driver.find_elements(By.CSS_SELECTOR, 'table tbody tr')
-            
-            for row in rows:
-                cells = row.find_elements(By.CSS_SELECTOR, 'td')
-                if len(cells) >= 6:
-                    try:
-                        symbol = cells[1].text.strip()
-                        sctr_text = cells[5].text.strip()
-                        if symbol and sctr_text:
-                            try:
-                                sctr_value = float(sctr_text)
-                                stocks.append({'symbol': symbol, 'sctr': sctr_value})
-                            except ValueError:
-                                continue
-                    except Exception:
-                        continue
-            
-            driver.quit()
-            logger.info(f"Selenium scraped {len(stocks)} stocks")
-            
-        except Exception as selenium_err:
-            logger.warning(f"Selenium failed: {selenium_err}, trying fallback")
-            # Fallback: simple requests
-            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-            response = requests.get(SCTR_URL, headers=headers, timeout=30)
-            soup = BeautifulSoup(response.content, 'lxml')
-            
-            rows = soup.select('table tbody tr')
-            for row in rows[:300]:
-                cells = row.find_all('td')
-                if len(cells) >= 6:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        }
+        
+        response = requests.get(SCTR_URL, headers=headers, timeout=30)
+        response.raise_for_status()
+        
+        soup = BeautifulSoup(response.content, 'lxml')
+        
+        # Find table rows
+        rows = soup.select('table tbody tr')
+        logger.info(f"Found {len(rows)} rows")
+        
+        for row in rows:
+            cells = row.find_all('td')
+            if len(cells) >= 6:
+                try:
                     symbol = cells[1].get_text(strip=True)
                     sctr_text = cells[5].get_text(strip=True)
-                    try:
-                        sctr = float(sctr_text)
-                        stocks.append({'symbol': symbol, 'sctr': sctr})
-                    except:
-                        continue
-            
-            logger.info(f"Fallback scraped {len(stocks)} stocks")
+                    
+                    if symbol and sctr_text:
+                        try:
+                            sctr_value = float(sctr_text)
+                            if 0 <= sctr_value <= 100:
+                                stocks.append({'symbol': symbol, 'sctr': sctr_value})
+                        except ValueError:
+                            continue
+                except Exception:
+                    continue
         
-        # Sort by SCTR rank and take top 300
         stocks.sort(key=lambda x: x['sctr'], reverse=True)
+        logger.info(f"Scraped {len(stocks)} stocks")
         return stocks[:300]
         
     except Exception as e:
@@ -116,7 +87,6 @@ def scrape_sctr():
         return []
 
 def calculate_yfinance_data(symbol):
-    """Calculate additional data using YFinance"""
     try:
         ticker = yf.Ticker(symbol)
         info = ticker.info
@@ -132,11 +102,10 @@ def calculate_yfinance_data(symbol):
             'fifty_two_week_high': info.get('fiftyTwoWeekHigh'),
             'fifty_two_week_low': info.get('fiftyTwoWeekLow')
         }
-    except Exception as e:
+    except:
         return {}
 
 def enrich_data_with_yfinance(stocks):
-    """Enrich stock data with YFinance calculations"""
     enriched = []
     for stock in stocks[:50]:
         yf_data = calculate_yfinance_data(stock['symbol'])
@@ -144,7 +113,6 @@ def enrich_data_with_yfinance(stocks):
     return enriched
 
 def save_data():
-    """Save data to JSON file"""
     try:
         with open(DATA_FILE, 'w') as f:
             json.dump(sctr_data, f, indent=2)
@@ -153,7 +121,6 @@ def save_data():
         logger.error(f"Error saving data: {e}")
 
 def load_data():
-    """Load data from JSON file"""
     global sctr_data
     try:
         if os.path.exists(DATA_FILE):
@@ -163,7 +130,6 @@ def load_data():
         logger.error(f"Error loading data: {e}")
 
 def export_to_google_sheets(stocks_data):
-    """Export stock data to Google Sheets"""
     try:
         client = get_google_sheets_client()
         if not client:
@@ -197,7 +163,6 @@ def export_to_google_sheets(stocks_data):
         return False, str(e)
 
 def update_sctr_data_background():
-    """Update SCTR data in background"""
     global sctr_data, is_updating
     is_updating = True
     
@@ -215,13 +180,13 @@ def update_sctr_data_background():
             logger.info(f"SCTR data updated: {len(enriched_stocks)} stocks")
         else:
             logger.error("Failed to scrape SCTR data")
+    except Exception as e:
+        logger.error(f"Update error: {e}")
     finally:
         is_updating = False
 
-# Routes
 @app.route('/')
 def index():
-    """Main page"""
     load_data()
     return render_template('index.html', 
                           data=sctr_data['stocks'], 
@@ -229,19 +194,16 @@ def index():
 
 @app.route('/api/data')
 def api_data():
-    """API endpoint for stock data"""
     load_data()
     return jsonify(sctr_data)
 
 @app.route('/api/update', methods=['POST'])
 def api_update():
-    """Manual update endpoint - starts background job"""
     global is_updating
     
     if is_updating:
         return jsonify({'status': 'processing', 'message': 'Update already in progress'}), 202
     
-    # Start background update
     thread = threading.Thread(target=update_sctr_data_background)
     thread.daemon = True
     thread.start()
@@ -250,7 +212,6 @@ def api_update():
 
 @app.route('/api/export', methods=['POST'])
 def api_export():
-    """Export to Google Sheets endpoint"""
     load_data()
     success, message = export_to_google_sheets(sctr_data['stocks'])
     if success:
@@ -260,17 +221,14 @@ def api_export():
 
 @app.route('/api/stock/<symbol>')
 def api_stock_detail(symbol):
-    """Get detailed info for a single stock"""
     yf_data = calculate_yfinance_data(symbol)
     return jsonify({'symbol': symbol, **yf_data})
 
 @app.route('/api/status')
 def api_status():
-    """Check if update is in progress"""
     return jsonify({'is_updating': is_updating})
 
 def run_scheduler():
-    """Run scheduled tasks"""
     def job():
         update_sctr_data_background()
     
