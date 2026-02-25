@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- META DESCRIPTION -->
+        <meta name="description" content="View intraday, end of week, or one week SCTR reports for large, mid and small cap stocks, US ETFs, Dow Jones industries, Toronto, London and India stocks." />
+        <meta name="keywords" content="StockCharts technical ranking, SCTR, SCTR Reports, large cap, mid cap, small cap, ETF, Toronto stocks London stocks, India stocks , technical analysis, charts, financial charts, stocks, stock analysis, stock chart" />
+        <!-- CONTENT SECURITY POLICY -->
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; default-src https: 'unsafe-eval' 'unsafe-inline'; frame-src https: data:; base-uri 'self' *.stockcharts.com; img-src 'self' *.stockcharts.com data: https:; manifest-src 'none'; media-src s3.amazonaws.com https: data:; object-src 'none'; worker-src blob:;" />
+        <link rel="shortcut icon" href="//d.stockcharts.com/favicon.gif" type="image/gif" />
+
+        <title>SCTR Reports | StockCharts Technical Rankings | StockCharts.com</title>
+
+        <meta property="og:title" content="SCTR Reports | StockCharts.com" />
+        <meta property="og:description" content="SCTR reports for large, mid and small cap stocks, US ETFs, Dow Jones industries, Toronto, London and India stocks" />
+        <meta property="og:image" content="https://d.stockcharts.com/img/scc-sctr-banner.png" />
+        <meta property="og:url" content="https://stockcharts.com/freecharts/sctr.html" />
+        <meta property="og:site_name" content="StockCharts.com" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://d.stockcharts.com/img/scc-sctr-banner.png" />
+        <meta name="twitter:image:alt" content="SCTR Reports" />
+        <meta name="twitter:title" content="SCTR Reports | StockCharts.com" />
+        <meta property="twitter:description" content="SCTR reports for large, mid and small cap stocks, US ETFs, Dow Jones industries, Toronto, London and India stocks" />
+        <meta name="twitter:site" content="@stockcharts" />
+        <!-- BOOTSTRAP -->
+        <link href="//d.stockcharts.com/vendor/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" />
+        <!-- SITEWIDE FONTS -->
+        <link href="//d.stockcharts.com/css/google-fonts.css" rel="stylesheet" />
+        <!-- SCC ICONS -->
+        <link href="//d.stockcharts.com/css/lib/scc-icons-square.css" rel="stylesheet" type="text/css" />
+        <!-- CSS (datatables) -->
+        <link href="//d.stockcharts.com/vendor/dataTables/jquery/1.11.3/jquery.dataTables.min.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="//d.stockcharts.com/vendor/dataTables/buttons/2.0.1/buttons.dataTables.min.css" rel="stylesheet" type="text/css" media="all" />
+        <!-- SITEWIDE CSS -->
+        <link href="//d.stockcharts.com/css/scc-universal.css?v=20240729" rel="stylesheet" type="text/css" media="all" />
+        <!-- CSS (tables) -->
+        <link href="//d.stockcharts.com/css/scc-tables.css" rel="stylesheet" type="text/css" media="all" />
+        <script type="text/javascript" src="//d.stockcharts.com/js/scc-tables.js"></script>
+        <!-- FONT AWESOME -->
+        <link href="//d.stockcharts.com/font-awesome/css/all-optimized.css" rel="stylesheet" type="text/css" media="all" />
+        <!-- JS (SHARED) -->
+        <script src="//d.stockcharts.com/vendor/jquery/3.6.0/jquery.min.js" type="text/javascript"></script>
+        <script src="//d.stockcharts.com/vendor/bootstrap/3.4.1/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="//d.stockcharts.com/js/scc-universal-v2.js" type="text/javascript"></script>
+        <!-- ANIMATED SCROLL -->
+        <script src="//d.stockcharts.com/vendor/jquery-easing/1.4.1/jquery.easing.min.js" type="text/javascript" async></script>
+        <!-- SCROLL TOP -->
+        <link href="//d.stockcharts.com/js/lib/jqueryplugins/ap-scroll-top/ap-scroll-top.min.css" rel="stylesheet" />
+        <script src="//d.stockcharts.com/js/lib/jqueryplugins/ap-scroll-top/ap-scroll-top.min.js"></script>
+        <!-- JS (freecharts) -->
+        <script src="//d.stockcharts.com/freecharts/freecharts.js?v=20250314" type="text/javascript"></script>
+        <!-- JS (datatables) -->
+        <script type="text/javascript" src="//d.stockcharts.com/vendor/dataTables/jquery/1.11.3/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="//d.stockcharts.com/vendor/dataTables/bootstrap/1.11.3/dataTables.bootstrap.min.js"></script>
+        <script type="text/javascript" src="//d.stockcharts.com/vendor/dataTables/buttons/2.0.1/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" src="//d.stockcharts.com/vendor/dataTables/buttons/2.0.1/buttons.colVis.min.js"></script>
+        <!-- JS (cookies) -->
+        <script type="text/javascript" src="//d.stockcharts.com/js/lib/jqueryplugins/jquery.cookie.js"></script>
+        <!-- jQuery UI (JS) -->
+        <script src="//d.stockcharts.com/vendor/jquery-ui/1.13.0/jquery-ui.min.js"></script>
+        <!-- jQuery UI (CSS) -->
+        <link href="//d.stockcharts.com/vendor/jquery-ui/1.13.0/jquery-ui.min.css" rel="stylesheet">
+        <!-- SCC STANDARD PAGE ADJUSTMENTS -->
+        <script src="//d.stockcharts.com/js/scc-standard-page-adjustments.js" type="text/javascript" defer></script>
+
+        <script type="text/javascript">
+            window.areRaptiveAdsEnabled = true;
+        </script>
+
+        <!-- CUSTOM STYLES -->
+        <style>
+            /* GENERAL */
+            #pagecontents { padding:15px 0; }
+            #pagecontents .container-fluid { padding-left:15px; padding-right:15px; }
+
+            #pagePillTabs .container-fluid { max-width:none; }
+
+            .symlink { font-weight:bold; }
+
+            #sctr-help { margin-top:15px; margin-bottom:0; }
+            #sctr-help a { font-weight:bold; }
+
+            /* Hide sorting columns */
+            .hidden { display: none !important; }
+        </style>
+    </head>
+    <body id="page-top">
+        <ul id="notification-banners"></ul>
+
+    <!-- SCC NAVBAR -->
+    <nav id="scc-navbar" class="navbar navbar-inverse navbar-blue navbar-static-top">
+        <div class="container-fluid">
+            <!-- NAV UPPER -->
+            <div id="nav-upper" class="row">
+                <!-- NAVBAR BRAND -->
+                <a href="/" class="navbar-brand">
+                    <img src="//d.stockcharts.com/img/scc-logo-light.png" alt="StockCharts Logo" class="navbar-logo" />
+                    <img src="//d.stockcharts.com/img/scc-logo-icon.png" alt="StockCharts Icon" class="navbar-logo logo-icon" />
+                </a>
+                <!-- MENU TOGGLE -->
+                <div id="nav-menuToggle" class="nav navbar-nav">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-menuCollapse" aria-expanded="false" aria-controls="navbar-menuCollapse" aria-label="Toggle Website Navigation Menu"><i class="fas fa-bars"></i></button>
+                </div>
+                <!-- ACCOUNT LINKS -->
+                <ul id="nav-accountLinks" class="nav navbar-nav">
+                    <li id="nav-loginBtn">
+                        <a href="/login" class="btn navbar-btn btn-transparent">Log In</a>
+                    </li>
+                    <li id="nav-signUpBtn">
+                        <a href="/checkout/freetrial/" class="btn navbar-btn btn-green">Free Trial</a>
+                    </li>
+                    <li id="nav-userProfile" class="dropdown">
+                        <a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-fw fa-user-circle"></i><span id="nav-userID">Welcome</span><i class="far fa-fw fa-angle-down"></i>
+                        </a>
+                        <ul id="nav-userMenu" class="dropdown-menu">
+                            <li class="dashboard"><a href="/panels"><i class="far fa-fw fa-tachometer-alt-fast"></i>&nbsp;&nbsp;Your Dashboard</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/panels#chartlists"><i class="fas fa-fw fa-user-chart"></i>&nbsp;&nbsp;Your ChartLists</a></li>
+                            <li><a href="/def/servlet/ScanUI"><i class="fal fa-fw fa-sliders-h"></i>&nbsp;&nbsp;Your Scans</a></li>
+                            <li><a href="/h-mem/useralertsummary.html"><i class="far fa-fw fa-bell"></i>&nbsp;&nbsp;Your Alerts</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/h-mem/notificationhistory.html"><i class="fas fa-fw fa-engine-warning"></i>&nbsp;&nbsp;Notifications</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/youracct"><i class="fas fa-fw fa-cogs"></i>&nbsp;&nbsp;Your Account</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="//help.stockcharts.com"><i class="fas fa-fw fa-question-circle"></i>&nbsp;&nbsp;Support Center</a></li>
+                            <li><a href="/support/techsupport.html"><i class="far fa-fw fa-envelope"></i>&nbsp;&nbsp;Contact Us</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/logout"><i class="fas fa-fw fa-sign-out-alt"></i>&nbsp;&nbsp;Log Out</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- CHART SEARCH -->
+                <form id="nav-chartSearch" class="input-group" role="search" onsubmit="return chartSearch('nav-chartSearch');">
+                    <div class="input-group-btn dropdown">
+                        <button type="button" id="nav-chartSearch-btn" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">SharpChart <i class="far fa-angle-down"></i></button>
+                        <input type="hidden" id="nav-chartSearch-type" name="searchoptions" value="sharpChart" />
+                        <ul class="dropdown-menu" id="nav-chartSearch-menu">
+                            <li>
+                                <a href="#" data-val="symSum">
+                                    <span class="item-label"><i class="far fa-fw fa-file-invoice-dollar"></i>Symbol Summary</span>
+                                    <span class="item-star"><i class="far fa-star"></i></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-val="sharpChart">
+                                    <span class="item-label"><i class="icon icon-scc-pos-sq-sharp fa-fw"></i>SharpChart</span>
+                                    <span class="item-star"><i class="far fa-star"></i></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-val="acp">
+                                    <span class="item-label"><i class="icon icon-scc-pos-sq-acp fa-fw"></i>ACP</span>
+                                    <span class="item-star"><i class="far fa-star"></i></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-val="pnf">
+                                    <span class="item-label"><i class="icon icon-scc-pos-sq-pnf fa-fw"></i>Point &amp; Figure</span>
+                                    <span class="item-star"><i class="far fa-star"></i></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-val="gallery">
+                                    <span class="item-label"><i class="icon icon-scc-pos-sq-gallery fa-fw"></i>GalleryView</span>
+                                    <span class="item-star"><i class="far fa-star"></i></span>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="#" data-val="seasonality"><i class="icon icon-scc-pos-sq-season fa-fw"></i>Seasonality</a></li>
+                            <li><a href="#" data-val="options"><i class="fas fa-fw fa-game-board-alt"></i>Options</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" data-val="perf"><i class="icon icon-scc-pos-sq-perfchart fa-fw"></i>PerfChart</a></li>
+                            <li><a href="#" data-val="candleGlance"><i class="icon icon-scc-pos-sq-candle fa-fw"></i>CandleGlance</a></li>
+                            <li><a href="#" data-val="rrg"><i class="icon icon-scc-pos-sq-rrg fa-fw"></i>RRG</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" data-val="symSearch"><i class="fas fa-fw fa-search-plus"></i>Symbol Lookup</a></li>
+                        </ul>
+                    </div>
+                    <input type="text" id="nav-chartSearch-input" class="form-control" placeholder="Enter Symbol or Name" aria-label="Search for a Security" />
+                    <span class="input-group-btn">
+                        <button id="nav-chartSearch-submit" class="btn btn-default btn-submit" type="submit">Go</button>
+                    </span>
+                </form>
+            </div><!-- end of NAV UPPER -->
+            <!-- NAV LOWER -->
+            <div id="nav-lower">
+                <!-- MENU COLLAPSE -->
+                <div id="navbar-menuCollapse" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav sitelinks">
+                        <li><a href="/freecharts/">Charts &amp; Tools</a></li>
+                        <li><a href="/articles/">Articles</a></li>
+                        <li><a href="/tv/">StockCharts TV</a></li>
+                        <li><a href="//chartschool.stockcharts.com">ChartSchool</a></li>
+                        <li class="dashboard"><a href="/panels"><span class="hide-sm">Your&nbsp;</span>Dashboard</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav sitelinks pull-right">
+                        <li><a href="//help.stockcharts.com">Help</a></li>
+                    </ul>
+                    <div id="nav-siteSearch-wrap">
+                        <form id="nav-siteSearch" role="search" action="/search/">
+                            <input type="search" id="nav-siteSearch-input" placeholder="Search StockCharts" name="q" required aria-label="Search StockCharts" />
+                            <input type="submit" id="nav-siteSearch-submit" value="Go" />
+                            <span id="nav-siteSearch-icon"></span>
+                        </form>
+                    </div>
+                </div><!-- end of MENU COLLAPSE -->
+            </div><!-- end of NAV LOWER -->
+        </div>
+    </nav><!-- end of SCC NAVBAR -->
+
+        <!-- PAGEBODY -->
+        <div id="pagebody">
+
+            <!-- PAGE GROUP TABS -->
+            <div id="pageGroupTabs">
+                <div class="container-fluid">
+                    <a href="/freecharts/marketsummary.html">
+                        <i class="fas fa-fw fa-globe-americas"></i>&nbsp;Market Summary
+                    </a>
+                    <a href="/freecharts/sectorsummary.html">
+                        <i class="fas fa-fw fa-chart-pie"></i>&nbsp;Sector Drill-Down
+                    </a>
+                    <a href="/freecharts/industrysummary.html">
+                        <i class="fas fa-fw fa-university"></i>&nbsp;US Industries
+                    </a>
+                    <a href="/freecharts/groupsummary.html">
+                        <i class="far fa-fw fa-layer-group"></i>&nbsp;Index Members
+                    </a>
+                    <a href="javascript:void(0)" class="active">
+                        <i class="fas fa-fw fa-trophy"></i>&nbsp;SCTR Reports
+                    </a>
+                    <a href="/freecharts/reported-earnings.html">
+                        <i class="fas fa-fw fa-badge-dollar"></i>&nbsp;Earnings Calendar
+                    </a>
+                    <a href="/freecharts/crypto/index.html">
+                        <i class="fab fa-fw fa-bitcoin"></i>&nbsp;Cryptocurrencies
+                    </a>
+                </div>
+            </div><!-- end of PAGE GROUP TABS -->
+
+            <!-- PAGE PILL TABS -->
+            <div id="pagePillTabs">
+                <div class="container-fluid">
+                    <div class="dropdown">
+                        <button id="sctrGroupsMenu" class="btn btn-blue btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span>Large Cap Stocks</span><i class="far fa-angle-down"></i>
+                        </button>
+                        <ul id="sctrGroupsList" class="dropdown-menu" style="max-height:none;">
+                            <li class="menu-section-title title-top">SCTR Universes</li>
+                            <li><a href="#" data-value="L" data-name="Large Cap Stocks">Large Cap Stocks</a></li>
+                            <li><a href="#" data-value="M" data-name="Mid Cap Stocks">Mid Cap Stocks</a></li>
+                            <li><a href="#" data-value="S" data-name="Small Cap Stocks">Small Cap Stocks</a></li>
+                            <li><a href="#" data-value="E" data-name="US ETFs">US ETFs</a></li>
+                            <li><a href="#" data-value="I" data-name="US Industries">Dow Jones US Industries</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" data-value="C" data-name="Toronto Stocks">Toronto Stocks</a></li>
+                            <li><a href="#" data-value="U" data-name="London Stocks">London Stocks</a></li>
+                            <li><a href="#" data-value="N" data-name="India Stocks">India Stocks</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!-- end of PAGE PILL TABS -->
+
+            <!-- PAGECONTENTS -->
+            <div id="pagecontents">
+                <div class="container-fluid">
+
+                    <!-- TABLE INFO ROW -->
+                    <div class="table-info-row">
+                        <!-- HOVERNOTE -->
+                        <div class="hovernote">
+                            <i class="far fa-lightbulb-on"></i> <span class="hide-sm">Hover over symbol to see a mini chart</span><span class="show-sm">Tap symbol for mini chart</span>
+                        </div>
+                        <!-- DATE -->
+                        <div id="report-date" class="table-date"></div>
+                    </div>
+
+                    <!-- LOADING SPINNER -->
+                    <div id="loading-spinner" class="loading-spinner">
+                        <i class="fas fa-fw fa-circle-notch fa-spin"></i>
+                    </div>
+
+                    <div id="loading-wrapper" style="display:none;">
+                        <!-- TABLE -->
+                        <table id="sctr" class="table table-striped table-bordered table-hover nowrap" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="align-center menu" scope="col"><i class="fas fa-fw fa-external-link"></i></th>
+                                    <th class="align-left" width="5%" scope="col">Symbol</th>
+                                    <th class="align-left" scope="col">Name</th>
+                                    <th class="align-left" scope="col">Sector</th>
+                                    <th class="align-left" scope="col">Industry</th>
+                                    <th class="align-right" width="5%" scope="col">SCTR</th>
+                                    <th class="align-right" width="5%" scope="col">Chg</th>
+                                    <th class="align-right" width="5%" scope="col">Last</th>
+                                    <th class="align-right" width="5%" scope="col">Volume</th>
+                                    <th class="align-right" width="5%" scope="col">Market Cap</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table><!-- end of TABLE -->
+                    </div>
+
+                    <!-- SCTR HELP -->
+                    <div id="sctr-help" class="alert alert-secondary">
+                        <a href="//chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/stockcharts-technical-rank" aria-label="Information on StockCharts Technical Ratings">Click Here</a> for more info about the StockCharts Technical Rankings (SCTRs)
+                    </div>
+
+                </div><!-- end of .CONTAINER -->
+            </div><!-- end of #PAGECONTENTS -->
+        </div><!-- end of #PAGEBODY -->
+
+        <!-- SCC FOOTER -->
+        <footer id="scc-footer" class="footer-blue">
+            <!-- UPPER -->
+            <div id="footer-upper">
+                <div class="container">
+                    <!-- NEWSLETTER -->
+                    <div id="newsletter">
+                        <div class="bg-cw"></div>
+                        <div class="col-lg-6 col-md-7 col-xs-12">
+                            <h4>Expert market commentary delivered right to your inbox, <span>for&nbsp;free.</span></h4>
+                            <p>Sign up for our weekly ChartWatchers&nbsp;Newsletter</p>
+                        </div>
+                        <div class="input-col col-lg-6 col-md-5 col-xs-12">
+                            <!-- MC SIGNUP -->
+                            <div id="mc_embed_signup" class="form-group">
+                                <form action="https://stockcharts.us17.list-manage.com/subscribe/post?u=3353671ea8af8c5eab80183ab&amp;id=7b214beb69" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" rel="noopener noreferrer" novalidate>
+                                    <div id="mc_embed_signup_scroll">
+                                        <div class="mc-field-group" style="display:inline-block; vertical-align:middle; width:calc(100% - 110px); margin:0 5px 0 0;">
+                                            <input type="email" value="" name="EMAIL" placeholder="Enter Your Email" class="required email form-control input-lg" id="mce-EMAIL" aria-label="Enter Your Email" />
+                                        </div>
+                                        <div class="clear btn-row" style="display:inline-block; vertical-align:middle;">
+                                            <input type="submit" value="Sign Up" name="subscribe" id="mc-embedded-subscribe" class="button btn btn-green btn-rounded btn-md btn-margin-0" />
+                                        </div>
+                                        <div id="mce-responses" class="clear">
+                                            <div class="response" id="mce-error-response" style="display:none"></div>
+                                            <div class="response" id="mce-success-response" style="display:none"></div>
+                                        </div>
+                                        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                                        <div style="position:absolute; left:-5000px;" aria-hidden="true"><input type="text" name="b_3353671ea8af8c5eab80183ab_7b214beb69" tabindex="-1" value="" aria-label="Sign Up" /></div>
+                                    </div>
+                                </form>
+                            </div><!-- end of MC SIGNUP -->
+                            <div class="more-link">
+                                <a href="/newsletter/">Learn&nbsp;More&nbsp;&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- end of UPPER -->
+            <!-- LOWER -->
+            <div id="footer-lower">
+                <div class="container">
+                    <!-- SITELINKS -->
+                    <div id="sitelinks" class="clearfix">
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <h4>On&nbsp;StockCharts</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="/freecharts/">Charts &amp; Tools</a></li>
+                                <li><a href="/articles/">Articles</a></li>
+                                <li><a href="/tv/">StockCharts TV</a></li>
+                                <li><a href="//chartschool.stockcharts.com">ChartSchool</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <h4>Members</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="/panels">Your Dashboard</a></li>
+                                <li><a href="/panels#chartlists">Your ChartLists</a></li>
+                                <li><a href="/def/servlet/ScanUI">Advanced Scans</a></li>
+                                <li><a href="/h-mem/useralertsummary.html">Technical Alerts</a></li>
+                            </ul>
+                        </div>
+                        <div class="clearfix visible-sm-block"></div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <h4>Help</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="//help.stockcharts.com">Support Center</a></li>
+                                <li><a href="//help.stockcharts.com/learning-more/frequently-asked-questions">FAQs</a></li>
+                                <li><a href="/support/techsupport.html">Contact Us</a></li>
+                                <li><a href="/freecharts/catalog/">Symbol Catalog</a></li>
+                                <li><a href="/pricing/">Pricing</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <h4>Company</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="/about/">About Us</a></li>
+                                <li><a href="/new/">What's New</a></li>
+                            </ul>
+                        </div>
+                        <div class="clearfix visible-sm-block"></div>
+                    </div>
+                    <!-- LOGO -->
+                    <div id="logo-col" class="col-xs-12">
+                        <a href="/">
+                            <img src="//d.stockcharts.com/img/scc-logo-light.png" alt="StockCharts.com Logo" class="footer-logo" />
+                        </a>
+                        <!-- SOCIAL LINKS -->
+                        <ul id="social-links" class="list-inline list-unstyled">
+                            <li><a href="https://www.youtube.com/user/stockchartscom" target="_blank" aria-label="StockCharts YouTube Page" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a></li>
+                            <li><a href="https://twitter.com/stockcharts" target="_blank" aria-label="StockCharts Twitter Page" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="https://www.facebook.com/stockchartsdotcom" target="_blank" aria-label="StockCharts Facebook Page" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href="https://www.linkedin.com/company/stockcharts.com-inc." target="_blank" aria-label="StockCharts LinkedIn Page" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a></li>
+                        </ul>
+                    </div>
+                    <!-- COPYRIGHT -->
+                    <div id="copyright-col" class="col-xs-12">
+                        <div class="app-buttons">
+                            <!-- IOS APP BUTTONS -->
+                            <a href="/ios-app/" target="_blank" rel="noopener noreferrer" class="app-btn relative ios-btn">
+                                <img src="//d.stockcharts.com/img/app-store-btn.png" alt="Download StockCharts On The App Store" />
+                            </a>
+                            <a href="https://apps.apple.com/us/app/stockcharts/id6443663518" target="_blank" rel="noopener noreferrer" class="app-btn external ios-btn">
+                                <img src="//d.stockcharts.com/img/app-store-btn.png" alt="Download StockCharts On The App Store" />
+                            </a>
+                            <!-- ANDROID APP BUTTONS -->
+                            <a href="/android-app/" target="_blank" rel="noopener noreferrer" class="app-btn relative android-btn">
+                                <img src="//d.stockcharts.com/img/google-play-btn.png" alt="Download StockCharts On The Google Play Store" />
+                            </a>
+                            <a href="https://play.google.com/store/apps/details?id=com.stockcharts.mobile.app.android" target="_blank" rel="noopener noreferrer" class="app-btn external android-btn">
+                                <img src="//d.stockcharts.com/img/google-play-btn.png" alt="Download StockCharts On The Google Play Store" />
+                            </a>
+                        </div>
+                        <div class="copyright-content">
+                            <p class="copyright">&copy;&nbsp;StockCharts.com,&nbsp;Inc. All&nbsp;Rights&nbsp;Reserved.</p>
+                            <ul class="list-inline list-unstyled">
+                                <li><a href="//help.stockcharts.com/learning-more/policies-and-limitations/terms-of-service" target="_blank" rel="noopener noreferrer">Terms&nbsp;of&nbsp;Service</a></li>
+                                <li><a href="//help.stockcharts.com/learning-more/policies-and-limitations/privacy-statement" target="_blank" rel="noopener noreferrer">Privacy&nbsp;Statement</a></li>
+                                <li><a href="/sitemap.html" target="_blank" rel="noopener noreferrer">Site&nbsp;Map</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- LEGAL -->
+                    <div id="legal-col" class="col-lg-10 col-lg-offset-1 col-xs-12">
+                        <p class="legal">Market data provided by <b>Xignite, Inc</b>. Commodity and historical index data provided by <b>Pinnacle Data Corporation</b>. Cryptocurrency data provided by <b>CryptoCompare</b>. Unless otherwise indicated, all data is delayed by 15 minutes. The information provided by StockCharts.com, Inc. is not investment advice. Trading and investing in financial markets involves risk. You are responsible for your own investment&nbsp;decisions.</p>
+                    </div>
+                </div>
+            </div><!-- end of LOWER -->
+        </footer><!-- end of SCC FOOTER -->
+
+        <!-- JAVASCRIPT WARNING -->
+        <noscript>
+            <div class="alert alert-danger" role="alert">
+                <h2>Attention: your browser does not have JavaScript enabled!</h2>
+                <p><b>In order to use StockCharts.com successfully, you must enable JavaScript in your browser.</b><br /><a href="https://www.enable-javascript.com" target="_blank" aria-label="Instructions to Enable JavaScript" rel="noopener noreferrer">Click Here</a> to learn how to enable JavaScript.</p>
+            </div>
+        </noscript>
+
+        <!-- CUSTOM SCRIPTS -->
+        <script>
+            retrieveNotifications('freecharts');
+        </script>
+
+        <script>
+            var cDomain = "//"+window.location.hostname;
+            var sctrData;
+            var sctrTable;
+            var sctrView = "L";
+            var sctrText = "<span>Large Cap Stocks</span> <i class='far fa-angle-down'></i>";
+
+            $(function() {
+                var dtDom = '<"table-controls-top clearfix"<"table-toolbar btn-row"Bl>fr><"table-responsive"t><"table-controls-bottom clearfix"ip>';
+
+                var periodHTML = $('<div class="form-group"><label for="select_period" class="label-xs label-caps label-dark">Timeframe</label><select class="form-control input-sm" id="select_period" onchange="onChangePeriod(); return false;" name="select_period"><option name="Intraday" value="I" selected="selected">Intraday</option><option name="End-of-Day" value="E">End-of-Day</option><option name="One Week" value="W">One Week</option></select></div>');
+
+                sctrTable = $('#sctr').DataTable( {
+                    dom: dtDom,
+                    buttons: [
+                        {
+                            extend: 'colvis',
+                            columns: '1,2,3,4,5,6,7,8,9',
+                            text: 'Columns'
+                        }
+                    ],
+                    columnDefs: [{orderable: false, targets: [0]},
+                    {orderSequence: [ "desc", "asc"], targets: [5,6,7,8,9]},
+                    {targets: [10], visible: false},
+                    {targets: [9], dataSort: 10},
+                    {
+                        targets: [1], createdCell: function (td, cellData, rowData, row, col) {
+                                $(td).html("<span class=\"symlink\" data-sym=\"\">" + cellData + "</span>");
+                            }
+                        },
+                        {
+                            targets: [2], createdCell: function (td, cellData, rowData, row, col) {
+                                $(td).html("<a href='/h-sc/ui?s=" + rowData[1] + "' target='_blank'>" + cellData + "<a>");
+                            }
+                        },
+                    {
+
+                        targets: [5], createdCell: function (td, cellData, rowData, row, col) {
+                                if (cellData && cellData !== "-") {
+                                    if (parseFloat(cellData) > 89.9) {
+                                        $(td).addClass('sctr-a90');
+                                    } else if (parseFloat(cellData) > 79.9) {
+                                        $(td).addClass('sctr-a80');
+                                    } else if (parseFloat(cellData) > 59.9) {
+                                        $(td).addClass('sctr-a60');
+                                    } else if (parseFloat(cellData) > 39.9) {
+                                        $(td).addClass('sctr-a40');
+                                    } else if (parseFloat(cellData) > 19.9) {
+                                        $(td).addClass('sctr-a20');
+                                    } else {
+                                        $(td).addClass('sctr-a00');
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    pageLength: 500,
+                    lengthMenu: [[100, 500, 1000, -1], [100, 500, 1000, 'All']],
+                    "order": [5, "desc"],
+                    "createdRow": function (row, data, index) {
+
+                        let links = `
+                                <div class="dropdown">
+                                    <button type="button" class="btn dropdown-toggle dropdown-link" aria-haspopup="true" aria-expanded="false">
+                                        <span class="dropdown-toggle-label"><i class="fas fa-bars"></i></span>
+                                    </button>
+                                </div>`;
+                            $('td', row).eq(0).html(links).addClass('menu').data('symbol', data[1]);
+                    },
+                    "deferRender": true,
+                    data: sctrData,
+                    columns: [
+                        {data: null, defaultContent: "", class:"align-center"},
+                        {title: 'Symbol', class:"align-left"},
+                        {title: 'Name', width:"30%", class:"align-left"},
+                        {title: 'Sector', width:"10%", class:"align-left"},
+                        {title: 'Industry', width:"15%", class:"align-left"},
+                        {title: 'SCTR', class:"align-right sctr"},
+                        {
+                            title: "Chg",
+                            class: "align-right",
+                            createdCell: function (td, cellData, rowData, row, col) {
+
+                                var data = cellData;
+                                var bar = data >= 0 ? 'green' : 'red';
+                                $(td).addClass(bar);
+                            }
+                        },
+                        {title: 'Last', class:"align-right"},
+                        {title: 'Volume', class:"align-right"},
+                        {title: 'Market Cap', class:"align-right"},
+                        {title: 'Market Cap (Sort)', class:"hidden"}
+                    ],
+                    language: {
+                        search: "<label class='label-xs' aria-hidden=\"true\">&nbsp;</label>_INPUT_",
+                        searchPlaceholder: "Search Table",
+                        "lengthMenu": "<label class='label-xs label-caps label-dark'>Entries</label>_MENU_",
+                        "paginate": {
+                            "previous": "<i class='far fa-angle-left'></i>",
+                            "next": "<i class='far fa-angle-right'></i>"
+                        }
+                    }
+                } );
+
+                $('.dataTables_length').addClass('form-group');
+
+                $('.dataTables_filter').addClass('form-group');
+
+                $('.buttons-colvis').addClass('btn btn-white btn-sq');
+
+                $('.dt-buttons').prepend(periodHTML);
+
+                var periodValue = $("#select_period").val();
+                loadData(periodValue);
+                registerLinkMenuHandler();
+            });
+
+            function loadTable() {
+                sctrTable.clear().rows.add(sctrData).draw();
+            }
+
+            $(document).tooltip({
+                items: "[data-sym]",
+                content: function () {
+                    var element = $(this);
+                    var symbol = element.text();
+                    return "<img src='"+cDomain+"/c-sc/sc?chart=" + encodeURIComponent(symbol) + ",uu[290,a]dalayaci[dd]&r=" + Date.now() + "'>";
+                }
+            });
+
+            function loadData(periodValue) {
+                var view = sctrView;
+                var that = this;
+                try {
+                $.ajax({
+                    url: cDomain+"/j-sum/sum",
+                    dataType: 'json',
+                    data: {
+                        cmd: "sctr",
+                        view: view,
+                        timeframe: periodValue,
+                        r: Date.now()
+                    },
+                    xhrFields: {withCredentials: true},
+                    success: function(data) {
+                        sctrData = new Array();
+                        for (var key in data) {
+                            var d = data[key];
+                            if (d.date) {
+                                $("#report-date").html(d.date);
+                            } else {
+                                var g = ["", d.symbol, d.name, d.sector, d.industry, formatSCTR(d.SCTR), formatSCTRChg(parseFloat(d.delta)), formatNumber(parseFloat(d.close)), formatWholeNumber(parseInt(d.vol)),getNumericDisplayInfo(parseFloat(d.marketCap)), parseFloat(d.marketCap)];
+                                that.sctrData.push(g);
+                            }
+                        }
+                        loadTable();
+                        $('#loading-wrapper').show();
+                        $('#loading-spinner').hide();
+                    }
+                });
+                } catch (e) {
+                $('#loading-wrapper').show();
+                    $('#loading-spinner').hide();
+                }
+            }
+
+            function onChangePeriod() {
+                var periodValue = $("#select_period").val();
+                loadData(periodValue);
+            }
+
+            $('#sctrGroupsList li a').click(function (e) {
+                sctrView = $(this).data('value');
+                sctrText = $(this).data('name');
+                var html = '<span>' + sctrText + '</span> <i class="far fa-angle-down"></i>';
+                $('#sctrGroupsMenu').html(html);
+                e.preventDefault();
+                var periodValue = $("#select_period").val();
+                loadData(periodValue);
+            });
+
+            $.apScrollTop({
+                visibilityTrigger: window.innerHeight,
+                position: 'right bottom'
+            });
+        </script>
+    </body>
+</html>
