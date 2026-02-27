@@ -133,11 +133,20 @@ def calculate_yfinance_data(symbol):
     try:
         ticker = yf.Ticker(symbol)
         info = ticker.info
+        price = info.get('currentPrice') or info.get('regularMarketPrice')
+        previous_close = info.get('previousClose') or info.get('regularMarketPreviousClose')
+
+        change = None
+        change_percent = None
+        if price is not None and previous_close is not None and previous_close != 0:
+            change = round(price - previous_close, 4)
+            change_percent = round((change / previous_close) * 100, 4)
+
         return {
-            'price': info.get('currentPrice') or info.get('regularMarketPrice'),
-            'change': info.get('regularMarketChange'),
-            'change_percent': info.get('regularMarketChangePercent'),
-            'volume': info.get('regularMarketVolume'),
+            'price': price,
+            'change': change,
+            'change_percent': change_percent,
+            'volume': info.get('regularMarketVolume') or info.get('volume'),
             'market_cap': info.get('marketCap'),
             'pe_ratio': info.get('trailingPE'),
             'day_high': info.get('dayHigh'),
